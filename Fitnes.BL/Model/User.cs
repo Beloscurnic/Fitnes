@@ -5,18 +5,16 @@ namespace Fitnes.BL.Model
     /// <summary>
     /// Пользователь
     /// </summary>
+    [Serializable]
     public class User
     {
         #region Cвойства 
-        public string Name { get; private set; }
+        public string Name { get;  set; }
         /// <summary>
         /// Пол.
         /// </summary>
-        public Gender Gender { get; private set; }
-        public DateTime Brithdate { get; }
-        public double Weight1 { get; }
-        public double Heigth1 { get; }
-        public DateTime BrithDate { get; private set; }
+        public Gender Gender { get; set; }
+        public DateTime BrithDate { get; set; }
         /// <summary>
         /// Вес.
         /// </summary>
@@ -25,6 +23,20 @@ namespace Fitnes.BL.Model
         /// Рост.
         /// </summary>
         public double Heigth { get; set; }
+
+        public int Age
+        {
+            get
+            {
+                DateTime nowDate = DateTime.Today;
+                int age = nowDate.Year - BrithDate.Year;
+                if (BrithDate > nowDate.AddYears(-age))
+                {
+                    age--;
+                }
+                return age;
+            }
+        }
         #endregion
         /// <summary>
         /// Создать пользователя
@@ -61,14 +73,24 @@ namespace Fitnes.BL.Model
 
             Name = name;
             Gender = gender;
-            Brithdate = brithdate;
-            Weight1 = weight;
-            Heigth1 = heigth;
+            BrithDate = brithdate;
+            Weight = weight;
+            Heigth = heigth;
+        }
+
+        public User(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Имя пользователя не должно быть null.", nameof(name));
+            }
+
+            Name = name;
         }
 
         public override string ToString()
         {
-            return Name;
+            return Name+" "+ Age;
         }
     }
 }
