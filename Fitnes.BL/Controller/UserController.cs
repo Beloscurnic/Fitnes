@@ -1,18 +1,19 @@
 ﻿using Fitnes.BL.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Fitnes.BL.Controller
 {
-    public class UserController
+    public class UserController : ControllerBase
+
     {
+        private const string USER_FILE_NAME = "users.dat";
         public IList<User> Users { get; }
         public User CurrentUser { get; }
 
         public bool IsNewUser { get; } = false;
+
         public UserController(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -37,33 +38,15 @@ namespace Fitnes.BL.Controller
 
         private IList<User> GetUsersData()
         {
-            var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-               
-                if (fs.Length >0 && formatter.Deserialize(fs) is List<User> users)
-                {
-                    return users;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-                //TODO: Если пользователя не прочитали 
-
-            }
+            return Load<List<User>>(USER_FILE_NAME) ?? new List<User>();
         }
+
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Users);
-            }
-
+            Save(USER_FILE_NAME, Users);
         }
 
-        public void SetNewUserData(string gendername, DateTime birthDate, double weight=1, double height=1)
+        public void SetNewUserData(string gendername, DateTime birthDate, double weight = 1, double height = 1)
         {
             // Проверка 
             CurrentUser.Gender = new Gender(gendername);
@@ -71,7 +54,7 @@ namespace Fitnes.BL.Controller
             CurrentUser.Heigth = height;
             CurrentUser.Weight = weight;
             Save();
-           
+
         }
 
     }

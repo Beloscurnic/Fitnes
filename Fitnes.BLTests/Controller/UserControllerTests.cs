@@ -28,14 +28,17 @@ namespace Fitnes.BL.Controller.Tests
         [TestMethod()]
         public void SetNewUserDataTest()
         {
+            //Arrange
             var usernaem = Guid.NewGuid().ToString();
             var birthDate = DateTime.Now.AddYears(-18);
             var weight = 90;
             var height = 180;
             var gender = "man";
             var controller = new UserController(usernaem);
+            //Act
             controller.SetNewUserData(gender, birthDate, weight, height);
             var controller2 = new UserController(usernaem);
+            //Assert
             Assert.AreEqual(usernaem, controller2.CurrentUser.Name);
             Assert.AreEqual(birthDate, controller2.CurrentUser.BrithDate);
             Assert.AreEqual(gender, controller2.CurrentUser.Gender.Name);
